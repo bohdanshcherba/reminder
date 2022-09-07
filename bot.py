@@ -14,6 +14,18 @@ from basa.basa import *
 chat_id = 846592602
 current_week = [WEEK_ALL, WEEK_B]
 
+
+def check_cur_week():
+    week_num = datetime.now().isocalendar()[1]
+
+    if week_num % 2 == 0:
+        current_week[1] = WEEK_B
+    else:
+        current_week[1] = WEEK_A
+
+
+check_cur_week()
+
 bot = telebot.TeleBot(config.bot_token)
 
 
@@ -39,6 +51,7 @@ def function_to_run():
             return
 
 
+schedule.every().monday.at('01:00').do(check_cur_week)
 schedule.every().day.at(l1).do(function_to_run)
 schedule.every().day.at(l2).do(function_to_run)
 schedule.every().day.at(l3).do(function_to_run)
