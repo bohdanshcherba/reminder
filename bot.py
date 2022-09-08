@@ -11,7 +11,7 @@ import sys
 sys.path.append('../reminderBot')
 from basa.basa import *
 
-chat_id = 846592602
+users = [846592602, 601080746, 597662940]
 current_week = [WEEK_ALL, WEEK_B]
 
 
@@ -31,7 +31,7 @@ bot = telebot.TeleBot(config.bot_token)
 
 @bot.message_handler(commands=['start'])
 def start(msg):
-    bot.send_message(msg.chat.id, msg.chat.id)
+    bot.send_message(msg.chat.id, str(msg.chat.id))
 
 
 def schedule_checker():
@@ -46,9 +46,11 @@ def function_to_run():
 
     for subject in base:
         if subject[WEEK] in current_week and subject[DAY] == day and subject[TIME] == now_time:
-            bot.send_message(chat_id, f'{subject[NAME]}\n'
-                                      f'{subject[URL]}')
-            return
+            for chat_id in users:
+                bot.send_message(chat_id, text=f"{subject[NAME]}\n"
+                                               f"<a href='{subject[URL]}'>Посилання</a>",
+                                 parse_mode='HTML', disable_web_page_preview=True)
+                bot.send_message(chat_id, text=f"{subject[DESCRIPTION]}", parse_mode='Markdown')
 
 
 schedule.every().monday.at('01:00').do(check_cur_week)
